@@ -7,7 +7,6 @@ gem "bootsnap", require: false
 
 # Authentication
 gem 'devise'
-gem 'devise-jwt'
 
 # API
 gem 'rack-cors'
