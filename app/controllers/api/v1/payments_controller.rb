@@ -27,7 +27,14 @@ module Api
       private
 
       def payment_params
-        params.require(:payment).permit(:amount, :card_number, :card_holder, :expiry_date, :cvv)
+        params.require(:payment).permit(
+          :amount, 
+          :card_number, 
+          :card_holder, 
+          :expiry_date, 
+          :cvv,
+          :card_token
+        )
       end
 
       def check_admin

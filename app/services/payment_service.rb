@@ -14,21 +14,14 @@ class PaymentService
     if mercado_pago_result[:success]
       payment.status = 'approved'
       payment.gateway_used = 'mercado_pago'
+      payment.transaction_id = mercado_pago_result[:transaction_id]
       payment.save
       return mercado_pago_result
     end
 
-    pag_seguro_result = PaymentGateway::PagSeguroService.new(payment).process_payment
-    
-    if pag_seguro_result[:success]
-      payment.status = 'approved'
-      payment.gateway_used = 'pag_seguro'
-    else
-      payment.status = 'failed'
-      payment.gateway_used = 'pag_seguro'
-    end
-
+    payment.status = 'failed'
+    payment.gateway_used = 'mercado_pago'
     payment.save
-    pag_seguro_result
+    mercado_pago_result
   end
 end 

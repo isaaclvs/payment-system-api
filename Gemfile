@@ -14,6 +14,9 @@ gem 'jsonapi-serializer'
 gem 'rack-cors'
 gem 'active_model_serializers'
 
+# Mercado Pago
+gem 'mercadopago-sdk', '~> 2.2', '>= 2.2.1'
+
 # Environment Variables
 gem 'dotenv-rails'
 
