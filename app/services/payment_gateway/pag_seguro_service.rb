@@ -5,14 +5,17 @@ module PaymentGateway
     end
 
     def process_payment
-      sleep(1)
-      success = rand < 0.8
-      
-      if success
-        { success: true, message: 'Payment processed successfully with PagSeguro' }
+      if valid_card?
+        { success: true, message: "Payment approved via PagSeguro" }
       else
-        { success: false, message: 'Payment failed with PagSeguro' }
+        { success: false, message: "Payment declined via PagSeguro" }
       end
+    end
+
+    private
+
+    def valid_card?
+      @payment.card_number.length == 16
     end
   end
 end

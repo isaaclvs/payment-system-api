@@ -5,14 +5,17 @@ module PaymentGateway
     end
 
     def process_payment
-      sleep(1)
-      success = rand < 0.7
-      
-      if success
-        { success: true, message: 'Payment processed successfully with MercadoPago' }
+      if valid_card?
+        { success: true, message: "Payment approved via Mercado Pago" }
       else
-        { success: false, message: 'Payment failed with MercadoPago' }
+        { success: false, message: "Payment declined via Mercado Pago" }
       end
+    end
+
+    private
+
+    def valid_card?
+      @payment.card_number.start_with?('4')
     end
   end
 end
