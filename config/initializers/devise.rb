@@ -310,4 +310,15 @@ Devise.setup do |config|
   # When set to false, does not sign a user in automatically after their password is
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
+
+  # Configure para API
+  config.navigational_formats = []
+  config.sign_out_via = :delete
+  
+  # Não usar sessões para API
+  config.skip_session_storage = [:http_auth]
+  
+  # Permitir autenticação via token
+  config.http_authenticatable = true
+  config.http_authenticatable_on_xhr = true
 end
