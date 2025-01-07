@@ -2,7 +2,7 @@ module PaymentGateway
   class MercadoPagoService
     def initialize(payment)
       @payment = payment
-      @sdk = Mercadopago::SDK.new(ENV['MercadoPago_ACCESS_TOKEN'])
+      @sdk = Mercadopago::SDK.new(ENV['MP_ACCESS_TOKEN'])
     end
 
     def process_payment
@@ -17,31 +17,33 @@ module PaymentGateway
         }
       }
 
-      payment_response = @sdk.payment.create(payment_data)
-      
-      if payment_response['status'] == 201
-        { 
-          success: true, 
-          message: "Payment approved via Mercado Pago",
-          transaction_id: payment_response['response']['id']
-        }
-      else
+      begin
+        result = @sdk.payment.create(payment_data)
+        payment_response = result[:response]
+        
+        if payment_response['status'] == 'approved'
+          { 
+            success: true, 
+            message: "Payment approved via Mercado Pago",
+            transaction_id: payment_response['id']
+          }
+        else
+          { 
+            success: false, 
+            message: "Payment declined via Mercado Pago: #{payment_response['status_detail']}"
+          }
+        end
+      rescue => e
         { 
           success: false, 
-          message: "Payment declined via Mercado Pago: #{payment_response['response']['message']}"
+          message: "Error processing payment via Mercado Pago: #{e.message}"
         }
       end
-    rescue => e
-      { 
-        success: false, 
-        message: "Error processing payment via Mercado Pago: #{e.message}"
-      }
     end
 
     private
 
     def detect_payment_method
-      # Detect card type based on first digit
       case @payment.card_number[0]
       when '4'
         'visa'
