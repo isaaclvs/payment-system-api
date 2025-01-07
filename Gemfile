@@ -13,6 +13,7 @@ gem 'jsonapi-serializer'
 # API
 gem 'rack-cors'
 gem 'active_model_serializers'
+gem 'httparty'
 
 # Mercado Pago
 gem 'mercadopago-sdk', '~> 2.2', '>= 2.2.1'
