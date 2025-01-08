@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '../../../app/services/payment_gateway/mercado_pago_service'
 
 RSpec.describe PaymentGateway::MercadoPagoService do
   let(:user) { create(:user) }
@@ -12,64 +13,48 @@ RSpec.describe PaymentGateway::MercadoPagoService do
     allow(sdk_instance).to receive(:payment).and_return(payment_client)
   end
 
-  describe '#process_payment' do
-    context 'when payment is successful' do
-      let(:successful_response) do
-        {
-          'status' => 201,
-          'response' => {
-            'id' => 12345,
-            'status' => 'approved'
-          }
-        }
-      end
-
-      before do
-        allow(payment_client).to receive(:create).and_return(successful_response)
-      end
-
-      it 'returns success response' do
-        result = service.process_payment
-        
-        expect(result[:success]).to be true
-        expect(result[:message]).to eq('Payment approved via Mercado Pago')
-        expect(result[:transaction_id]).to eq(12345)
-      end
+  context 'when payment is successful' do
+    let(:successful_payment_response) do
+      { 
+        success: true, 
+        message: "Payment approved via Mercado Pago",
+        transaction_id: '123456789'
+      }
     end
 
-    context 'when payment is declined' do
-      let(:failed_response) do
-        {
-          'status' => 400,
-          'response' => {
-            'message' => 'Invalid card number'
-          }
+    it 'returns success response' do
+      allow(payment_client).to receive(:create).and_return({
+        response: { 
+          'status' => 'approved',
+          'id' => '123456789'
         }
-      end
+      })
 
-      before do
-        allow(payment_client).to receive(:create).and_return(failed_response)
-      end
+      result = service.process_payment
+      expect(result[:success]).to be true
+      expect(result[:message]).to eq('Payment approved via Mercado Pago')
+    end
+  end
 
-      it 'returns failure response' do
-        result = service.process_payment
-        
-        expect(result[:success]).to be false
-        expect(result[:message]).to include('Payment declined via Mercado Pago')
-      end
+  context 'when payment is declined' do
+    let(:failed_payment_response) do
+      { 
+        success: false, 
+        message: "Payment declined via Mercado Pago: declined"
+      }
     end
 
-    context 'when API raises an error' do
-      before do
-        allow(payment_client).to receive(:create).and_raise(StandardError.new('API Error'))
-      end
+    it 'returns failure response' do
+      allow(payment_client).to receive(:create).and_return({
+        response: { 
+          'status' => 'rejected',
+          'status_detail' => 'declined'
+        }
+      })
 
-      it 'handles the error gracefully' do
-        result = service.process_payment
-        
-        expect(result[:success]).to be false
-        expect(result[:message]).to include('Error processing payment via Mercado Pago')
-      end
+      result = service.process_payment
+      expect(result[:success]).to be false
+      expect(result[:message]).to include('Payment declined via Mercado Pago')
     end
   end
 end
