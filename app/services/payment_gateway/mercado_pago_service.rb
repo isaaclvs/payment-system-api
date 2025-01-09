@@ -11,7 +11,12 @@ module PaymentGateway
     end
 
     def process_payment
-      generate_card_token
+      @card_token = generate_card_token
+
+      if @card_token.nil?
+        render json: { status: 'error', message: 'Failed to generate card token' }, status: :unprocessable_entity
+        return
+      end
 
       custom_headers = {
         'Authorization': "Bearer #{ENV['MercadoPago_ACCESS_TOKEN']}",
@@ -77,9 +82,9 @@ module PaymentGateway
       response = HTTParty.post(url, headers: headers, body: body.to_json, timeout: 30)
 
       if response.code == 201
-        @card_token = response.parsed_response['id'] # Card Token
-        @payment.update!(card_token: @card_token)
-        @card_token
+        card_token = response.parsed_response['id'] # Card Token
+        @payment.update!(card_token: card_token)
+        card_token
       else
         Rails.logger.error "Error generating card token: #{response.body}"
         nil
