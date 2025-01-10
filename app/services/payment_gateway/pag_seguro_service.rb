@@ -9,7 +9,7 @@ module PaymentGateway
       @payment = payment
     end
 
-    # Main method to process payment by creating an order and then paying for it
+    # Main method to yrocess payment by creating an order and then paying for it
     def process_payment
       # Create the order on PagSeguro
       order_response = create_order(@payment)
@@ -19,7 +19,6 @@ module PaymentGateway
       order_id = order_response[:order_id]
       order_status = order_response[:status]
 
-      binding.pry
       return { success: false, message: 'Order not authorized for payment' } unless order_status == 'PAID'
 
       # Pay for the created order
@@ -57,7 +56,6 @@ module PaymentGateway
     def pay_for_order(order_id, payment)
       response = HTTParty.post("https://sandbox.api.pagseguro.com/orders/#{order_id}/pay", headers: headers,
                                                                                            body: payment_data(payment).to_json)
-      binding.pry
       if response.code == 201
         charge_status = response.parsed_response.dig('charges', 0, 'status')
         if charge_status == 'PAID'
