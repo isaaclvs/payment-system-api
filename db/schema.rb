@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_07_162723) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_09_201344) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,6 +28,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_07_162723) do
     t.bigint "user_id", null: false
     t.string "card_token"
     t.string "transaction_id"
+    t.string "cpf"
+    t.index ["cpf"], name: "index_payments_on_cpf"
     t.index ["transaction_id"], name: "index_payments_on_transaction_id"
     t.index ["user_id"], name: "index_payments_on_user_id"
   end

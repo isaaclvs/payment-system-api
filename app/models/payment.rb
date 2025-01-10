@@ -2,6 +2,7 @@ class Payment < ApplicationRecord
   belongs_to :user
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
+  validates :cpf, presence: true, format: { with: /\A\d{11}\z/, message: "must be 11 digits" }
   validates :card_number, presence: true
   validates :card_holder, presence: true
   validates :expiry_date, presence: true
