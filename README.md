@@ -72,6 +72,49 @@ GET /api/v1/payments      # Listar pagamentos (requer admin)
 }
 ```
 
+## 🔑 Credenciais de Teste
+
+Utilize as seguintes credenciais para testar a integração com os gateways de pagamento.
+
+**Importante: A aplicação faz a requisição primeiro para o PagSeguro, se a transação falhar será feita a tentativa com o Mercado Pago como _fallback_.**
+
+### PagSeguro
+- **Número do cartão**: `4539620659922097`
+- **Nome do titular**: `TESTE`
+- **Validade**: `12/30`
+- **CVV**: `123`
+- **CPF**: `12345678909`
+
+### Mercado Pago
+- **Número do cartão**: `4929291898380766`
+- **Nome do titular**: `APRO`
+- **Validade**: `12/30`
+- **CVV**: `123`
+- **CPF**: `12345678909`
+
+### Falha Total
+- **Número do cartão**: `4929291898380766`
+- **Nome do titular**: `OTHE`
+- **Validade**: `12/30`
+- **CVV**: `123`
+- **CPF**: `12345678909`
+
+Certifique-se de configurar o ambiente de testes no código para que as transações utilizem esses dados de teste.
+
+## 🔐 Credenciais de Login
+
+Utilize as credenciais abaixo para acessar a API com diferentes níveis de permissão:
+
+### Administrador
+- **Email**: `admin@test.com`
+- **Senha**: `password123`
+
+### Usuário Comum
+- **Email**: `user@test.com`
+- **Senha**: `password123`
+
+Certifique-se de criar os usuários no ambiente de teste ou configurar os dados para corresponder ao seu banco de dados.
+
 ## 🚀 Configuração e Instalação
 
 1. Clone o repositório:
