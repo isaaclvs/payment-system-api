@@ -49,7 +49,6 @@ module Api
           :card_holder,
           :expiry_date,
           :cvv,
-          :card_token,
           :cpf
         )
       end
