@@ -1,45 +1,45 @@
-# API de Processamento de Pagamentos
+# Payment Processing API
 
-API desenvolvida em Ruby on Rails para processar pagamentos através de dois gateways (Mercado Pago e PagSeguro) com sistema de fallback automático.
+API developed in Ruby on Rails to process payments through two gateways (Mercado Pago and PagSeguro) with automatic fallback system.
 
-## 🎯 Visão Geral
+## 🎯 Overview
 
-Esta API foi desenvolvida como parte de um desafio técnico, oferecendo:
-- Integração com dois gateways de pagamento
-- Sistema de fallback automático
-- Autenticação de usuários
-- Controle de acesso baseado em funções (admin/user)
-- Rastreamento completo do ciclo de vida do pagamento
+This API was developed as part of a technical challenge, offering:
+- Integration with two payment gateways
+- Automatic fallback system
+- User authentication
+- Role-based access control (admin/user)
+- Complete payment lifecycle tracking
 
-## 💻 Tecnologias Utilizadas
+## 💻 Technologies Used
 
 - Ruby 3.x
 - Rails 7.1.0
 - PostgreSQL
-- Devise + JWT (autenticação)
-- RSpec (testes)
+- Devise + JWT (authentication)
+- RSpec (testing)
 - Active Model Serializers
 - Mercado Pago SDK
 - HTTParty
 - Rack CORS
 - Dotenv Rails
 
-## 📝 Endpoints da API
+## 📝 API Endpoints
 
-### Autenticação
+### Authentication
 ```
-POST /signup         # Registro de usuário
-POST /login         # Login do usuário
-DELETE /logout      # Logout do usuário
-```
-
-### Pagamentos
-```
-POST /api/v1/payments      # Criar pagamento
-GET /api/v1/payments      # Listar pagamentos (requer admin)
+POST /signup         # User registration
+POST /login         # User login
+DELETE /logout      # User logout
 ```
 
-### Exemplo de Requisição de Pagamento
+### Payments
+```
+POST /api/v1/payments      # Create payment
+GET /api/v1/payments      # List payments (requires admin)
+```
+
+### Payment Request Example
 ```json
 {
   "payment": {
@@ -53,7 +53,7 @@ GET /api/v1/payments      # Listar pagamentos (requer admin)
 }
 ```
 
-### Exemplo de Resposta de Pagamento
+### Payment Response Example
 ```json
 {
 	"status": "success",
@@ -72,64 +72,64 @@ GET /api/v1/payments      # Listar pagamentos (requer admin)
 }
 ```
 
-## 🔑 Credenciais de Teste
+## 🔑 Test Credentials
 
-Utilize as seguintes credenciais para testar a integração com os gateways de pagamento.
+Use the following credentials to test the integration with payment gateways.
 
-**Importante: A aplicação faz a requisição primeiro para o PagSeguro, se a transação falhar será feita a tentativa com o Mercado Pago como _fallback_.**
+**Important: The application makes the request first to PagSeguro, if the transaction fails it will attempt with Mercado Pago as _fallback_.**
 
 ### PagSeguro
-- **Número do cartão**: `4539620659922097`
-- **Nome do titular**: `TESTE`
-- **Validade**: `12/30`
+- **Card number**: `4539620659922097`
+- **Cardholder name**: `TESTE`
+- **Expiry date**: `12/30`
 - **CVV**: `123`
 - **CPF**: `12345678909`
 
 ### Mercado Pago
-- **Número do cartão**: `4929291898380766`
-- **Nome do titular**: `APRO`
-- **Validade**: `12/30`
+- **Card number**: `4929291898380766`
+- **Cardholder name**: `APRO`
+- **Expiry date**: `12/30`
 - **CVV**: `123`
 - **CPF**: `12345678909`
 
-### Falha Total
-- **Número do cartão**: `4929291898380766`
-- **Nome do titular**: `OTHE`
-- **Validade**: `12/30`
+### Total Failure
+- **Card number**: `4929291898380766`
+- **Cardholder name**: `OTHE`
+- **Expiry date**: `12/30`
 - **CVV**: `123`
 - **CPF**: `12345678909`
 
-Certifique-se de configurar o ambiente de testes no código para que as transações utilizem esses dados de teste.
+Make sure to configure the test environment in the code so that transactions use this test data.
 
-## 🔐 Credenciais de Login
+## 🔐 Login Credentials
 
-Utilize as credenciais abaixo para acessar a API com diferentes níveis de permissão:
+Use the credentials below to access the API with different permission levels:
 
-### Administrador
+### Administrator
 - **Email**: `admin@test.com`
-- **Senha**: `password123`
+- **Password**: `password123`
 
-### Usuário Comum
+### Regular User
 - **Email**: `user@test.com`
-- **Senha**: `password123`
+- **Password**: `password123`
 
-Certifique-se de criar os usuários no ambiente de teste ou configurar os dados para corresponder ao seu banco de dados.
+Make sure to create the users in the test environment or configure the data to match your database.
 
-## 🚀 Configuração e Instalação
+## 🚀 Setup and Installation
 
-1. Clone o repositório:
+1. Clone the repository:
 ```bash
 git clone https://github.com/isaaclvs/payment-system-api.git
 cd payment-system-api
 ```
 
-2. Instale as dependências:
+2. Install dependencies:
 ```bash
 bundle install
 ```
 
-3. Configure as variáveis de ambiente:
-Crie um arquivo `.env` na raiz do projeto:
+3. Configure environment variables:
+Create a `.env` file in the project root:
 ```
 # Mercado Pago Credentials
 
@@ -142,31 +142,31 @@ PagSeguro_Email=your_email
 PagSeguro_ACCESS_TOKEN=your_access_token_here
 ```
 
-4. Configure o banco de dados:
+4. Configure the database:
 ```bash
 rails db:create
 rails db:migrate
 ```
 
-## 📊 Modelos
+## 📊 Models
 
-### User (Usuário)
+### User
 ```ruby
 attributes:
-- email (string, único)
+- email (string, unique)
 - role (string: 'admin'/'user')
 - encrypted_password (string)
-- jti (string, para JWT)
+- jti (string, for JWT)
 
 relationships:
 - has_many :payments
 ```
 
-### Payment (Pagamento)
+### Payment
 ```ruby
 attributes:
 - amount (decimal)
-- card_number (string, mascarado)
+- card_number (string, masked)
 - card_holder (string)
 - expiry_date (string)
 - cvv (string)
@@ -180,63 +180,63 @@ relationships:
 - belongs_to :user
 ```
 
-## 🔒 Segurança
+## 🔒 Security
 
-- Mascaramento de dados sensíveis do cartão
-- Autenticação via JWT
-- Controle de acesso baseado em funções
-- Proteção contra CORS
-- Validações em nível de modelo
-- Sanitização de parâmetros
+- Sensitive card data masking
+- JWT authentication
+- Role-based access control
+- CORS protection
+- Model-level validations
+- Parameter sanitization
 
-## 🧪 Testes
+## 🧪 Testing
 
-O projeto utiliza RSpec para testes. Para executar:
+The project uses RSpec for testing. To run:
 
 ```bash
-bundle exec rspec                  # Todos os testes
-bundle exec rspec spec/models      # Testes de modelos
-bundle exec rspec spec/requests    # Testes de endpoints
-bundle exec rspec spec/services    # Testes de serviços
+bundle exec rspec                  # All tests
+bundle exec rspec spec/models      # Model tests
+bundle exec rspec spec/requests    # Endpoint tests
+bundle exec rspec spec/services    # Service tests
 ```
 
-## 🚦 Tratamento de Erros
+## 🚦 Error Handling
 
-A API utiliza códigos de status HTTP padrão:
+The API uses standard HTTP status codes:
 
-- 200: Sucesso
-- 201: Criado
-- 400: Requisição inválida
-- 401: Não autorizado
-- 403: Proibido
-- 422: Entidade não processável
-- 500: Erro interno do servidor
+- 200: Success
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 422: Unprocessable Entity
+- 500: Internal Server Error
 
-Exemplo de resposta de erro:
+Error response example:
 ```json
 {
   "status": "failed",
-  "message": "Falha no processamento do pagamento"
+  "message": "Payment processing failed"
 }
 ```
 
-## 📝 Fluxo de Processamento de Pagamento
+## 📝 Payment Processing Flow
 
-1. Recebimento da requisição de pagamento
-2. Validação dos dados do cartão
-3. Tentativa de pagamento no Mercado Pago
-4. Em caso de falha, tentativa automática no PagSeguro
-5. Registro do resultado da transação
-6. Retorno do status para o cliente
+1. Payment request received
+2. Card data validation
+3. Payment attempt on Mercado Pago
+4. In case of failure, automatic attempt on PagSeguro
+5. Transaction result recording
+6. Status return to client
 
-## 🔍 Logs e Monitoramento
+## 🔍 Logging and Monitoring
 
-O sistema registra eventos importantes:
-- Tentativas de pagamento
-- Transições entre gateways
-- Eventos de autenticação
-- Erros do sistema
+The system logs important events:
+- Payment attempts
+- Gateway transitions
+- Authentication events
+- System errors
 
-## 📄 Licença
+## 📄 License
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+This project is under the MIT license. See the `LICENSE` file for more details.
